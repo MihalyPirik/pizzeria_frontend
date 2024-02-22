@@ -78,7 +78,7 @@ function displayValuesInDiv(dataArray, categoryIdKey, categoryNameKey, foodCount
 
     anchorElement.addEventListener("click", function (event) {
       event.preventDefault();
-      
+
       const clickedCardId = item[categoryIdKey];
       console.log('Clicked card ID:', clickedCardId);
 

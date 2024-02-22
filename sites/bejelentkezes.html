@@ -69,19 +69,26 @@
   <!--ÉTLEP SZEKCIÓ-->
   <main class="container" data-aos="fade-up">
 
-    <form class="text-center">
-      <label for="InputEmail" class="form-label">Email:</label>
-      <div class="input-group input-group-lg col-md-4 mx-auto mb-4">
-        <input type="email" class="form-control" id="InputEmail">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <form>
+            <div class="mb-3">
+              <label for="InputEmail" class="form-label">Email:</label>
+              <input type="email" class="form-control" id="InputEmail" placeholder="Írja be az email címét">
+            </div>
+            <div class="mb-3">
+              <label for="InputPassword" class="form-label">Jelszó:</label>
+              <input type="password" class="form-control" id="InputPassword" placeholder="Írja be a jelszavát">
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary">Bejelentkezés</button>
+            </div>
+          </form>
+        </div>
       </div>
-      <label for="InputPassword" class="form-label">Jelszó:</label>
-      <div class="input-group input-group-lg col-md-4 mx-auto mb-4">
-        <input type="password" class="form-control" id="InputPassword">
-      </div>
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary">Bejelentkezés</button>
-      </div>
-    </form>
+    </div>
+
 
     <hr data-aos="fade-up" data-aos-duration="1000" id="elerhetosegek">
     <br><br><br>
