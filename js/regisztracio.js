@@ -31,9 +31,8 @@ document.getElementById('registrationForm').addEventListener('submit', function 
   fetch(chechEmailApiUrl)
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       if (data) {
-        Message('Ez az email cím már foglalt!', message,'red');;
+        Message('Ez az email cím már foglalt!', message,'red');
       } else {
         message.style.display = 'none';
 
