@@ -56,7 +56,7 @@ document.getElementById('registrationForm').addEventListener('submit', function 
           return;
         }
 
-        var phoneRegex = /^\+?[0-9]{7,}$/;
+        var phoneRegex = /^(?:\+?36)?(?:20|30|70)\d{7}$/;
         if (!phoneRegex.test(phoneNumber)) {
           Message('Kérem, adjon meg egy érvényes telefonszámot!', message, 'red');
           return;
