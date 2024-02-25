@@ -1,190 +1,187 @@
-
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-    /*background-image: url(../imgs/bg-body.jpg);
+  /*background-image: url(../imgs/bg-body.jpg);
     background-position: center;
     position: relative;
     background-repeat: no-repeat;
     background-size: cover;
     height: 100%;*/
-    /*background-color: rgb(61, 40, 18);*/
-    background-color: #474747;
-	margin: 0;
+  /*background-color: rgb(61, 40, 18);*/
+  background-color: #474747;
+  margin: 0;
 }
 
 .pg-logo {
-    text-align: center;
-    margin-top: 15px;
+  text-align: center;
+  margin-top: 15px;
 }
 
 h1 {
-    color: rgb(176, 133, 55);
-    text-align: center;
-    padding-top: 50px;
-    font-family: Overlock;
-    /*font-weight: bold;*/
-    font-size: 40px;
-    margin-top: 0px;
+  color: rgb(176, 133, 55);
+  text-align: center;
+  padding-top: 50px;
+  font-family: Overlock;
+  /*font-weight: bold;*/
+  font-size: 40px;
+  margin-top: 0px;
 }
 
 h4 {
-    color: rgb(163, 136, 74);
+  color: rgb(163, 136, 74);
 }
 
 hr {
-    border: 1.5px solid rgb(128, 128, 128);
-    max-width: 50%;
+  border: 1.5px solid rgb(128, 128, 128);
+  max-width: 50%;
 }
 
-.cards-top-margin{
-    margin-top: 50px;
+.cards-top-margin {
+  margin-top: 50px;
 }
 
 .card {
-    background-color: rgb(118, 85, 73);
-    margin: 20px 10px;
+  background-color: rgb(118, 85, 73);
+  margin: 20px 10px;
 }
 
-.card-title{
-    color: wheat;
+.card-title {
+  color: wheat;
 }
-
 
 .btn-primary {
-    background-color: rgb(97, 59, 6);
-    border: none;
+  background-color: rgb(97, 59, 6);
+  border: none;
 }
 
 .btn-primary:hover {
-    background-color: rgb(0, 160, 93);
-    border: none;
+  background-color: rgb(0, 160, 93);
+  border: none;
 }
 
-
 h2 {
-    color: beige;
+  color: beige;
 }
 
 p {
-    color: wheat;
+  color: wheat;
 }
 
 main {
-    height: auto
-}
-
-#kosar {
-    font-size: 20px;
-    color: rgb(213, 213, 213);
+  height: auto;
 }
 
 svg {
-    color: rgb(0, 160, 93);
+  color: rgb(0, 160, 93);
 }
 
 .active {
-    color: rgb(0, 160, 93) !important;
+  color: rgb(0, 160, 93) !important;
 }
 
-#rolunk {
-    margin-top: 50px;
+#about-me {
+  margin-top: 50px;
 }
 
-#etlap {
-    margin-top: 50px;
+#menu {
+  margin-top: 50px;
 }
 
 footer {
-    color: wheat;
-    background-color: rgba(74, 74, 51, 0.364);
-    padding: 5px 0;
-    text-align: center;
+  color: wheat;
+  background-color: rgba(74, 74, 51, 0.364);
+  padding: 5px 0;
+  text-align: center;
 }
 
 .breadcrumb {
-    background-color: #343a40
+  background-color: #343a40;
 }
 
 .breadcrumb-item {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .center-svg {
-    text-align: center;
+  text-align: center;
 }
 
 a {
-    text-decoration: none !important;
+  text-decoration: none !important;
 }
 
 .img-card {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
-.kepkozep {
-    text-align: center;
-    margin-top: 70px;
+#basket-title {
+  margin: 10px;
 }
 
-#kosar-felirat {
-    margin: 10px;
+#user-name {
+  margin-right: 5px;
+  color: rgb(251, 251, 251);
+}
+
+#user-name:hover {
+  color: rgb(0, 160, 93);
 }
 
 #login {
-    margin-right: 5px;
-    color: rgb(251, 251, 251);
+  margin-right: 5px;
+  color: rgb(251, 251, 251);
 }
 
-#login:hover{
-    color: rgb(0, 160, 93);
+#login:hover {
+  color: rgb(0, 160, 93);
 }
 
 #register {
-    margin-left: 5px;
-    color: rgb(255, 255, 255);
+  margin-left: 5px;
+  color: rgb(255, 255, 255);
 }
 
 #register:hover {
-    color: rgb(0, 160, 93);
+  color: rgb(0, 160, 93);
 }
 
 .bg-dark {
-    background-color: #B78338 !important;
+  background-color: #b78338 !important;
 }
 
 .navbar-brand {
-    color: rgb(202, 174, 83) !important;
+  color: rgb(202, 174, 83) !important;
 }
 
 .s-s {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .social-icons {
-    margin: 0 10px;
-    width: 40px;
-    height: 40px;
-    fill: currentColor;
-    transition: transform 0.3s ease;
-    cursor: pointer;
+  margin: 0 10px;
+  width: 40px;
+  height: 40px;
+  fill: currentColor;
+  transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .social-icons:hover {
-    transform: scale(1.2);
+  transform: scale(1.2);
 }
 
 #social {
-    color: wheat;
-    margin-left: 10px;
+  color: wheat;
+  margin-left: 10px;
 }
 
-.form-label, .comment {
-    color: wheat;
+.form-label,
+.comment {
+  color: wheat;
 }
 
 .mtt {
-    margin-top: 50px;
+  margin-top: 50px;
 }

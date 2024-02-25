@@ -89,6 +89,7 @@ document.getElementById('registrationForm').addEventListener('submit', function 
           .then(response => response.json())
           .then(data => {
             Message('Sikeres regisztráció!', message, 'green');
+            window.location.href = "login.html";
           })
           .catch(error => {
             Message('Hiba történt a regisztráció során!', message, 'red');

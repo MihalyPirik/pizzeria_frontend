@@ -1,22 +1,19 @@
 const urlParams = new URLSearchParams(window.location.search);
 const categoryId = urlParams.get('id');
 
-console.log('Category ID:', categoryId);
-
 const baseUrl = 'http://127.0.0.1:8000';
-
-function addBaseUrl(endpoint) {
-  return `${baseUrl}${endpoint}`;
-}
-
-function createApiEndpoint(endpoint) {
-  return addBaseUrl(`/api/${endpoint}`);
-}
 
 const foodsByCategoriesApiUrl = createApiEndpoint(`categories/${categoryId}`);
 const displayDivId = 'food-display';
 const defaultImageSrc = addBaseUrl('/imgs/pizzak1.png');
 const displayDiv = document.getElementById(displayDivId);
+const userNameElement = document.querySelector('#user-name');
+const userContainer = document.querySelector('#user-container');
+const inputContainerElement = document.querySelector('#input-container');
+
+userNameElement.textContent = '';
+inputContainerElement.style.display = '';
+userContainer.style.display = 'none';
 
 fetch(foodsByCategoriesApiUrl)
   .then(response => {
@@ -27,7 +24,6 @@ fetch(foodsByCategoriesApiUrl)
   })
   .then(data => {
     clearDisplayDiv(displayDiv);
-    console.log(data.foods);
 
     if (Array.isArray(data.foods)) {
       displayValuesInDiv(data.foods, 'name', 'price', displayDiv);
@@ -38,6 +34,56 @@ fetch(foodsByCategoriesApiUrl)
   .catch(error => {
     console.error('Error:', error);
   });
+
+const userApiUrl = createApiEndpoint("user");
+let userData;
+
+const userToken = getCookie('userToken');
+if (userToken) {
+  fetch(userApiUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${userToken}`
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      userData = data[0];
+
+      const userName = userData.name;
+      userNameElement.textContent = userName;
+
+      userContainer.style.display = '';
+      inputContainerElement.style.display = 'none';
+    })
+    .catch(error => {
+      console.error('Hiba történt a felhasználó adatainak lekérése közben:', error);
+    });
+}
+
+const logoutApiUrl = createApiEndpoint("logout");
+
+const logoutButton = document.querySelector('#logout-button');
+logoutButton.addEventListener('click', handleLogout);
+
+function addBaseUrl(endpoint) {
+  return `${baseUrl}${endpoint}`;
+}
+
+function createApiEndpoint(endpoint) {
+  return addBaseUrl(`/api/${endpoint}`);
+}
+
+function getCookie(name) {
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    const [cookieName, cookieValue] = cookie.split('=');
+    if (cookieName.trim() === name) {
+      return decodeURIComponent(cookieValue);
+    }
+  }
+  return null;
+}
 
 function clearDisplayDiv(displayDiv) {
   if (displayDiv) {
@@ -54,7 +100,7 @@ function displayValuesInDiv(dataArray, name, price, displayDiv) {
     divElement.setAttribute("data-aos-duration", "1000");
 
     var anchorElement = document.createElement("a");
-    anchorElement.href = "etelek.html";
+    anchorElement.href = "foods.html";
     anchorElement.className = "card-move img-transparent-background";
 
     var imgElement = document.createElement("img");
@@ -83,11 +129,30 @@ function displayValuesInDiv(dataArray, name, price, displayDiv) {
 
     anchorElement.addEventListener("click", function (event) {
       event.preventDefault();
-      
+
       const clickedCardId = item[categoryIdKey];
       console.log('Clicked card ID:', clickedCardId);
 
-      window.location.href = `etelek.html?id=${clickedCardId}`;
+      window.location.href = `foods.html?id=${clickedCardId}`;
     });
   });
 };
+
+function handleLogout() {
+  fetch(logoutApiUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${userToken}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Hiba történt a kijelentkezés során');
+      }
+      document.cookie = 'userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      window.location.href = 'index.html';
+    })
+    .catch(error => {
+      console.error('Hiba történt a kijelentkezés során:', error);
+    });
+}

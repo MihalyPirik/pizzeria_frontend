@@ -62,9 +62,7 @@ document
             const expirationDate = new Date();
             expirationDate.setDate(expirationDate.getDate() + 30);
             document.cookie = `userToken=${userToken}; expires=${expirationDate.toUTCString()}; path=/`;
-            console.log(userToken);
-            console.log(data);
-            //window.location.href = "index.html";
+            window.location.href = "index.html";
           });
         }
       })
