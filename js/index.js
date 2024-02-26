@@ -46,7 +46,7 @@ if (userToken) {
   })
     .then(response => response.json())
     .then(data => {
-      userData = data[0];
+      userData = data;
 
       const userName = userData.name;
       userNameElement.textContent = userName;

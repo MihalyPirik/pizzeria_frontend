@@ -27,11 +27,11 @@ document.getElementById('registrationForm').addEventListener('submit', function 
   let message = document.getElementById('error');
 
   const chechEmailApiUrl = createApiEndpoint('check-email/' + email);
-
+  
   fetch(chechEmailApiUrl)
-    .then(response => response.json())
-    .then(data => {
-      if (data) {
+  .then(response => response.json())
+  .then(data => {
+      if (data.exists) {
         Message('Ez az email cím már foglalt!', message,'red');
       } else {
         message.style.display = 'none';
@@ -56,7 +56,7 @@ document.getElementById('registrationForm').addEventListener('submit', function 
           return;
         }
 
-        var phoneRegex = /^(?:\+?36)?(?:20|30|70)\d{7}$/;
+        var phoneRegex = /^\+36(?:20|30|70)\d{7}$/;
         if (!phoneRegex.test(phoneNumber)) {
           Message('Kérem, adjon meg egy érvényes telefonszámot!', message, 'red');
           return;

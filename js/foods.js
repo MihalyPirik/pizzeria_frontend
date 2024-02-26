@@ -131,7 +131,6 @@ function displayValuesInDiv(dataArray, name, price, displayDiv) {
       event.preventDefault();
 
       const clickedCardId = item[categoryIdKey];
-      console.log('Clicked card ID:', clickedCardId);
 
       window.location.href = `foods.html?id=${clickedCardId}`;
     });
