@@ -1,28 +1,17 @@
 const baseUrl = "http://127.0.0.1:8000";
+const INDEX_PAGE_URL = 'index.html';
 
-function addBaseUrl(endpoint) {
-  return `${baseUrl}${endpoint}`;
-}
-
-function createApiEndpoint(endpoint) {
-  return addBaseUrl(`/api/${endpoint}`);
-}
-
-function Message(message, element, color) {
-  element.style.display = "block";
-  element.style.color = color;
-  element.innerHTML = message;
-}
+const loginApiUrl = createApiEndpoint("login");
+let userToken;
 
 document
   .getElementById("loginForm")
   .addEventListener("submit", function (event) {
     event.preventDefault();
 
-    let email = document.getElementById("InputEmail").value;
-    let password = document.getElementById("InputPassword").value;
-
-    let message = document.getElementById("error");
+    const email = document.querySelector("#InputEmail").value.trim();
+    const password = document.querySelector("#InputPassword").value.trim();
+    const message = document.querySelector("#error");
 
     var formData = {
       email: email,
@@ -40,8 +29,10 @@ document
       return;
     }
 
-    const loginApiUrl = createApiEndpoint("login");
-    let userToken;
+    if (password.length < 8) {
+      Message('A jelszónak legalább 8 karakter hosszúnak kell lennie!', message, 'red');
+      return;
+    }
 
     fetch(loginApiUrl, {
       method: "POST",
@@ -51,22 +42,35 @@ document
       body: JSON.stringify(formData),
     })
       .then((response) => {
-        if (!response.ok) {
-          response.json().then((data) => {
-            Message(data.message, message, "red");
-          });
-        } else {
-          response.json().then((data) => {
+        return response.json().then((data) => {
+          if (!response.ok) {
+            const errorMessage = data.message || "Hiba történt a bejelentkezés során!";
+            Message(errorMessage, message, "red");
+          } else {
             Message("Sikeres bejelentkezés!", message, "green");
             userToken = data.token;
             const expirationDate = new Date();
             expirationDate.setDate(expirationDate.getDate() + 30);
             document.cookie = `userToken=${userToken}; expires=${expirationDate.toUTCString()}; path=/`;
-            window.location.href = "index.html";
-          });
-        }
+            window.location.href = INDEX_PAGE_URL;
+          }
+        });
       })
       .catch((error) => {
         Message(error.message, message, "red");
       });
   });
+
+function addBaseUrl(endpoint) {
+  return `${baseUrl}${endpoint}`;
+}
+
+function createApiEndpoint(endpoint) {
+  return addBaseUrl(`/api/${endpoint}`);
+}
+
+function Message(message, element, color) {
+  element.style.display = "block";
+  element.style.color = color;
+  element.innerHTML = message;
+}
