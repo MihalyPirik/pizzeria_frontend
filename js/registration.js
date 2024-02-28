@@ -1,4 +1,5 @@
-const baseUrl = 'http://127.0.0.1:8000';
+import { createApiEndpoint, Message } from './functions.js';
+
 const LOGIN_PAGE_URL = 'login.html';
 
 document.getElementById('registrationForm').addEventListener('submit', function (event) {
@@ -92,19 +93,5 @@ document.getElementById('registrationForm').addEventListener('submit', function 
       .catch(error => {
         Message('Hiba történt a regisztráció során!', message, 'red');
       });
-  }
-
-  function addBaseUrl(endpoint) {
-    return `${baseUrl}${endpoint}`;
-  }
-
-  function createApiEndpoint(endpoint) {
-    return addBaseUrl(`/api/${endpoint}`);
-  }
-
-  function Message(message, element, color) {
-    element.style.display = 'block';
-    element.style.color = color;
-    element.innerHTML = message;
   }
 });

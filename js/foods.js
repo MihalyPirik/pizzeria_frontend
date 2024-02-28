@@ -1,15 +1,16 @@
+import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie } from './functions.js';
+
 const urlParams = new URLSearchParams(window.location.search);
 const categoryId = urlParams.get('id');
 
-const baseUrl = 'http://127.0.0.1:8000';
 const imgURL = '../imgs/pizzak1.png';
 
 const displayDiv = document.querySelector('#food-display');
 const userNameElement = document.querySelector('#user-name');
 const userContainer = document.querySelector('#user-container');
 const inputContainerElement = document.querySelector('#input-container');
+const logoutButton = document.querySelector('#logout-button');
 
-const INDEX_PAGE_URL = 'index.html';
 const FOODS_PAGE_URL = 'foods.html';
 
 const foodsByCategoriesApiUrl = createApiEndpoint(`categories/${categoryId}`);
@@ -21,6 +22,8 @@ userContainer.style.display = 'none';
 
 const userToken = getCookie('userToken');
 let userData;
+
+logoutButton.addEventListener('click', handleLogout);
 
 fetch(foodsByCategoriesApiUrl)
   .then(response => {
@@ -64,36 +67,6 @@ if (userToken) {
     });
 }
 
-const logoutApiUrl = createApiEndpoint("logout");
-
-const logoutButton = document.querySelector('#logout-button');
-logoutButton.addEventListener('click', handleLogout);
-
-function addBaseUrl(endpoint) {
-  return `${baseUrl}${endpoint}`;
-}
-
-function createApiEndpoint(endpoint) {
-  return addBaseUrl(`/api/${endpoint}`);
-}
-
-function getCookie(name) {
-  const cookies = document.cookie.split(';');
-  for (let cookie of cookies) {
-    const [cookieName, cookieValue] = cookie.split('=');
-    if (cookieName.trim() === name) {
-      return decodeURIComponent(cookieValue);
-    }
-  }
-  return null;
-}
-
-function clearDisplayDiv(displayDiv) {
-  if (displayDiv) {
-    displayDiv.innerHTML = '';
-  }
-};
-
 function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL) {
   dataArray.forEach(item => {
     const divElement = document.createElement('div');
@@ -102,24 +75,24 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
     divElement.setAttribute("data-aos-delay", "100");
     divElement.setAttribute("data-aos-duration", "1000");
 
-    var anchorElement = document.createElement("a");
+    const anchorElement = document.createElement("a");
     anchorElement.href = pageURL;
     anchorElement.className = "card-move img-transparent-background";
 
-    var imgElement = document.createElement("img");
+    const imgElement = document.createElement("img");
     imgElement.className = "card-img-top";
     imgElement.src = imgURL;
     imgElement.alt = "Card image cap";
 
     anchorElement.appendChild(imgElement);
 
-    var cardBodyElement = document.createElement("div");
+    const cardBodyElement = document.createElement("div");
     cardBodyElement.className = "card-body";
 
-    var headingElement = document.createElement("h5");
+    const headingElement = document.createElement("h5");
     headingElement.textContent = item[name];
 
-    var paragraphElement = document.createElement("p");
+    const paragraphElement = document.createElement("p");
     paragraphElement.textContent = item[price] + " forint";
 
     cardBodyElement.appendChild(headingElement);
@@ -136,28 +109,3 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
     });
   });
 };
-
-function handleLogout() {
-  if (!logoutApiUrl || !userToken) {
-    console.error('Nincs megadva kijelentkezési URL vagy felhasználói token.');
-    return;
-  }
-
-  fetch(logoutApiUrl, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${userToken}`
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Hiba történt a kijelentkezés során');
-      }
-      document.cookie = 'userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      window.location.href = INDEX_PAGE_URL;
-    })
-    .catch(error => {
-      console.error('Hiba történt a kijelentkezés során:', error);
-      alert('Hiba történt a kijelentkezés során. Kérlek, próbáld újra később.');
-    });
-}

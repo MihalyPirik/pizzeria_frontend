@@ -1,4 +1,5 @@
-const baseUrl = "http://127.0.0.1:8000";
+import { createApiEndpoint, Message } from './functions.js';
+
 const INDEX_PAGE_URL = 'index.html';
 
 const loginApiUrl = createApiEndpoint("login");
@@ -13,12 +14,12 @@ document
     const password = document.querySelector("#InputPassword").value.trim();
     const message = document.querySelector("#error");
 
-    var formData = {
+    const formData = {
       email: email,
       password: password,
     };
 
-    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Message("Kérem, adjon meg egy érvényes e-mail címet!", message, "red");
       return;
@@ -60,17 +61,3 @@ document
         Message(error.message, message, "red");
       });
   });
-
-function addBaseUrl(endpoint) {
-  return `${baseUrl}${endpoint}`;
-}
-
-function createApiEndpoint(endpoint) {
-  return addBaseUrl(`/api/${endpoint}`);
-}
-
-function Message(message, element, color) {
-  element.style.display = "block";
-  element.style.color = color;
-  element.innerHTML = message;
-}
