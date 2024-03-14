@@ -92,11 +92,22 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
     const headingElement = document.createElement("h5");
     headingElement.textContent = item[name];
 
+    const contentWrapper = document.createElement("div");
+    contentWrapper.className = "content-wrapper";
+
     const paragraphElement = document.createElement("p");
+    paragraphElement.className = "price";
     paragraphElement.textContent = item[price] + " forint";
 
+    const buttonElement = document.createElement("button");
+    buttonElement.className = "btn btn-primary btn-sm order-btn orderBtn";
+    buttonElement.textContent = "kosárba";
+
+    contentWrapper.appendChild(paragraphElement);
+    contentWrapper.appendChild(buttonElement);
+
     cardBodyElement.appendChild(headingElement);
-    cardBodyElement.appendChild(paragraphElement);
+    cardBodyElement.appendChild(contentWrapper);
 
     divElement.appendChild(anchorElement);
     divElement.appendChild(cardBodyElement);
