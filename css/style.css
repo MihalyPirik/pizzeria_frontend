@@ -188,6 +188,43 @@ a {
   margin-top: 50px;
 }
 
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.form-select {
+  width: 40px;
+  padding: 3px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  background-color: #fff;
+  outline: none;
+}
+
+.form-select select {
+  width: calc(100% - 22px);
+  height: auto;
+  border: none;
+  outline: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.form-select select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-select select::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 2px;
+}
+
+.form-select select::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+}
+
 .table-container {
   overflow-x: auto;
   margin: 5px;

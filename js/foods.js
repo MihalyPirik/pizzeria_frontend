@@ -15,6 +15,7 @@ const FOODS_PAGE_URL = 'foods.html';
 
 const foodsByCategoriesApiUrl = createApiEndpoint(`categories/${categoryId}`);
 const userApiUrl = createApiEndpoint("user");
+const orderApiUrl = createApiEndpoint(`orders`);
 
 userNameElement.textContent = '';
 inputContainerElement.style.display = '';
@@ -99,11 +100,24 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
     paragraphElement.className = "price";
     paragraphElement.textContent = item[price] + " forint";
 
+    const selectElement = document.createElement("select");
+    selectElement.className = "form-select";
+
+    for (let i = 0; i <= 10; i++) {
+      const optionElement = document.createElement("option");
+      optionElement.textContent = i;
+      if (i === 1) {
+        optionElement.selected = true;
+      }
+      selectElement.appendChild(optionElement);
+    }
+
     const buttonElement = document.createElement("button");
     buttonElement.className = "btn btn-primary btn-sm order-btn orderBtn";
     buttonElement.textContent = "kosárba";
 
     contentWrapper.appendChild(paragraphElement);
+    contentWrapper.appendChild(selectElement);
     contentWrapper.appendChild(buttonElement);
 
     cardBodyElement.appendChild(headingElement);
@@ -114,9 +128,48 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
 
     displayDiv.appendChild(divElement);
 
+    buttonElement.addEventListener("click", function () {
+
+      const orderData = {
+        order: [
+          {
+            quantity: selectElement.value,
+            name: item.name,
+            price: item.price,
+            allPrice: item.price * selectElement.value
+          }
+        ]
+      };
+
+      createOrder(orderData);
+    });
+
     anchorElement.addEventListener("click", function (event) {
       event.preventDefault();
-      console.log("teszt");
     });
   });
 };
+
+function createOrder(orderData) {
+  console.log(orderData);
+  fetch(orderApiUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(orderData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+}

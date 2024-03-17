@@ -39,7 +39,7 @@ fetch(userApiUrl, {
         return response.json();
       })
       .then(data => {
-        orderData = data[0].order;
+        orderData = data[0].order[0];
         let table = generateTable(orderData);
         displayDiv.appendChild(table);
       })
@@ -60,7 +60,7 @@ function generateTable(orderData) {
   let headRow = document.createElement('tr');
   ['Mennyiség', 'Megnevezés', 'Ár', 'Összesen'].forEach((headerText) => {
     let th = document.createElement('th');
-    th.textContent = headerText;
+    th.textContent = headerText.charAt(0).toUpperCase() + headerText.slice(1); // Az első betű nagybetűsítése
     headRow.appendChild(th);
   });
   thead.appendChild(headRow);
@@ -68,15 +68,13 @@ function generateTable(orderData) {
 
   // Tartalom létrehozása
   let tbody = document.createElement('tbody');
-  orderData.forEach((rowData) => {
-    let tr = document.createElement('tr');
-    rowData.forEach((data) => {
-      let td = document.createElement('td');
-      td.textContent = data;
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
+  let tr = document.createElement('tr');
+  Object.keys(orderData).forEach((key) => {
+    let td = document.createElement('td');
+    td.textContent = orderData[key];
+    tr.appendChild(td);
   });
+  tbody.appendChild(tr);
   tableContainer.appendChild(tbody);
 
   return tableContainer;
