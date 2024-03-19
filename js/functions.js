@@ -61,4 +61,20 @@ function handleLogout() {
     });
 }
 
-export { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, Message };
+
+function setTotalQuantityCookie(totalQuantity) {
+  document.cookie = `totalQuantity=${totalQuantity}`;
+}
+
+function getTotalQuantityFromCookie() {
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    const [name, value] = cookie.trim().split('=');
+    if (name === 'totalQuantity') {
+      return parseInt(value) || 0;
+    }
+  }
+  return "";
+}
+
+export { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, Message, setTotalQuantityCookie, getTotalQuantityFromCookie };

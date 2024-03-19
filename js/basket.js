@@ -1,8 +1,9 @@
-import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie } from './functions.js';
+import { createApiEndpoint, handleLogout, getCookie, setTotalQuantityCookie, getTotalQuantityFromCookie } from './functions.js';
 
 const displayDiv = document.querySelector('#displayDiv');
 const userNameElement = document.querySelector('#user-name');
 const logoutButton = document.querySelector('#logout-button');
+let basketTitle = document.querySelector('#basket-title');
 
 const orderApiUrl = createApiEndpoint(`orders`);
 const userApiUrl = createApiEndpoint("user");
@@ -39,7 +40,7 @@ fetch(userApiUrl, {
         return response.json();
       })
       .then(data => {
-        orderData = data[0].order[0];
+        orderData = data[0].order;
         let table = generateTable(orderData);
         displayDiv.appendChild(table);
       })
@@ -52,29 +53,41 @@ fetch(userApiUrl, {
   });
 
 function generateTable(orderData) {
+  let totalQuantity = 0;
   let tableContainer = document.createElement('table');
   tableContainer.classList.add('container');
 
-  // Fejléc létrehozása
   let thead = document.createElement('thead');
   let headRow = document.createElement('tr');
   ['Mennyiség', 'Megnevezés', 'Ár', 'Összesen'].forEach((headerText) => {
     let th = document.createElement('th');
-    th.textContent = headerText.charAt(0).toUpperCase() + headerText.slice(1); // Az első betű nagybetűsítése
+    th.textContent = headerText.charAt(0).toUpperCase() + headerText.slice(1);
     headRow.appendChild(th);
   });
   thead.appendChild(headRow);
   tableContainer.appendChild(thead);
 
-  // Tartalom létrehozása
   let tbody = document.createElement('tbody');
-  let tr = document.createElement('tr');
-  Object.keys(orderData).forEach((key) => {
-    let td = document.createElement('td');
-    td.textContent = orderData[key];
-    tr.appendChild(td);
+
+  orderData.forEach((orderItem) => {
+    let tr = document.createElement('tr');
+
+    Object.keys(orderItem).forEach((key) => {
+      let td = document.createElement('td');
+      td.textContent = orderItem[key];
+      tr.appendChild(td);
+
+      if (key === 'quantity') {
+        totalQuantity += parseInt(orderItem[key]);
+      }
+    });
+
+    tbody.appendChild(tr);
   });
-  tbody.appendChild(tr);
+
+  setTotalQuantityCookie(totalQuantity);
+  basketTitle.textContent = `(${getTotalQuantityFromCookie()})`;
+
   tableContainer.appendChild(tbody);
 
   return tableContainer;

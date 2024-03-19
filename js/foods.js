@@ -1,4 +1,4 @@
-import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie } from './functions.js';
+import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, getTotalQuantityFromCookie } from './functions.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const categoryId = urlParams.get('id');
@@ -10,6 +10,7 @@ const userNameElement = document.querySelector('#user-name');
 const userContainer = document.querySelector('#user-container');
 const inputContainerElement = document.querySelector('#input-container');
 const logoutButton = document.querySelector('#logout-button');
+let basketTitle = document.querySelector('#basket-title');
 
 const FOODS_PAGE_URL = 'foods.html';
 
@@ -34,6 +35,7 @@ fetch(foodsByCategoriesApiUrl)
     return response.json();
   })
   .then(data => {
+    basketTitle.textContent = `(${getTotalQuantityFromCookie()})`;
     clearDisplayDiv(displayDiv);
 
     if (Array.isArray(data.foods)) {
@@ -129,8 +131,7 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
     displayDiv.appendChild(divElement);
 
     buttonElement.addEventListener("click", function () {
-
-      const orderData = {
+      var orderData = {
         order: [
           {
             quantity: selectElement.value,
@@ -141,7 +142,21 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
         ]
       };
 
-      createOrder(orderData);
+      (async () => {
+        var orders = await fetchOrders();
+        if (orders.length === 0) {
+          createOrder(orderData);
+        }
+        else {
+          orders[0].order.push({
+            quantity: selectElement.value,
+            name: item.name,
+            price: item.price,
+            allPrice: item.price * selectElement.value
+          });
+          updateOrder(orders[0].id, orders[0].order, orders[0].created_at);
+        }
+      })();
     });
 
     anchorElement.addEventListener("click", function (event) {
@@ -150,8 +165,36 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
   });
 };
 
+async function fetchOrders() {
+  try {
+    const orders = await getOrders();
+    return orders;
+  } catch (error) {
+    console.error('Hiba történt:', error);
+  }
+}
+
+function getOrders() {
+  return fetch(orderApiUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${userToken}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+      throw error;
+    });
+}
+
+
 function createOrder(orderData) {
-  console.log(orderData);
   fetch(orderApiUrl, {
     method: 'POST',
     headers: {
@@ -167,7 +210,34 @@ function createOrder(orderData) {
       return response.json();
     })
     .then(data => {
-      console.log(data);
+
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+}
+
+function updateOrder(orderId, updatedData, created_at) {
+  const formattedData = {
+    id: orderId,
+    order: updatedData,
+    created_at: created_at
+  };
+  console.log(formattedData);
+
+  fetch(`${orderApiUrl}/${orderId}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formattedData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
     })
     .catch(error => {
       console.error('Error:', error.message);

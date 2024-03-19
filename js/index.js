@@ -1,4 +1,4 @@
-import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie } from './functions.js';
+import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, getTotalQuantityFromCookie } from './functions.js';
 
 const imgURL = '../imgs/pizzak1.png';
 
@@ -7,6 +7,7 @@ const userNameElement = document.querySelector('#user-name');
 const userContainer = document.querySelector('#user-container');
 const inputContainerElement = document.querySelector('#input-container');
 const logoutButton = document.querySelector('#logout-button');
+let basketTitle = document.querySelector('#basket-title');
 
 const FOODS_PAGE_URL = 'foods.html';
 
@@ -30,6 +31,7 @@ fetch(foodsByCategoriesApiUrl)
     return response.json();
   })
   .then(data => {
+    basketTitle.textContent = `(${getTotalQuantityFromCookie()})`;
     clearDisplayDiv(displayDiv);
 
     if (Array.isArray(data)) {
