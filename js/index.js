@@ -6,6 +6,8 @@ const displayDiv = document.querySelector('#categories-display');
 const userNameElement = document.querySelector('#user-name');
 const userContainer = document.querySelector('#user-container');
 const inputContainerElement = document.querySelector('#input-container');
+const loginElement = document.querySelector('#login');
+const registerElement = document.querySelector('#register');
 const logoutButton = document.querySelector('#logout-button');
 let basketTitle = document.querySelector('#basket-title');
 
@@ -16,6 +18,8 @@ const userApiUrl = createApiEndpoint("user");
 
 userNameElement.textContent = '';
 inputContainerElement.style.display = '';
+loginElement.textContent = 'Bejelentkezés';
+registerElement.textContent = 'Regisztráció';
 userContainer.style.display = 'none';
 
 const userToken = getCookie('userToken');
@@ -23,28 +27,11 @@ let userData;
 
 logoutButton.addEventListener('click', handleLogout);
 
-fetch(foodsByCategoriesApiUrl)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    basketTitle.textContent = `(${getTotalQuantityFromCookie()})`;
-    clearDisplayDiv(displayDiv);
-
-    if (Array.isArray(data)) {
-      displayValuesInDiv(data, 'CategoryId', 'Category', 'foodCount', displayDiv, imgURL, FOODS_PAGE_URL);
-    } else {
-      console.error('Error: A kapott adat nem egy tömb.');
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-
 if (userToken && userToken.trim() !== "") {
+  fetchData();
+}
+
+function fetchData() {
   fetch(userApiUrl, {
     method: 'GET',
     headers: {
@@ -63,8 +50,11 @@ if (userToken && userToken.trim() !== "") {
         const userName = userData.name;
         userNameElement.textContent = userName;
 
-        userContainer.style.display = '';
+        basketTitle.textContent = `${getTotalQuantityFromCookie()}`;
         inputContainerElement.style.display = 'none';
+        loginElement.textContent = '';
+        registerElement.textContent = '';
+        userContainer.style.display = '';
       } else {
         throw new Error('Hibás felhasználói adatok');
       }
@@ -73,6 +63,26 @@ if (userToken && userToken.trim() !== "") {
       console.error('Hiba történt a felhasználó adatainak lekérése közben:', error);
     });
 }
+
+fetch(foodsByCategoriesApiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    clearDisplayDiv(displayDiv);
+
+    if (Array.isArray(data)) {
+      displayValuesInDiv(data, 'CategoryId', 'Category', 'foodCount', displayDiv, imgURL, FOODS_PAGE_URL);
+    } else {
+      console.error('Error: A kapott adat nem egy tömb.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 
 function displayValuesInDiv(dataArray, categoryIdKey, categoryNameKey, foodCountKey, displayDiv, imgURL, pageURL) {
   dataArray.forEach(item => {

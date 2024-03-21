@@ -119,11 +119,11 @@ a {
 }
 
 #basket-title {
-  margin: 10px;
+  margin: 0px;
 }
 
 #user-name {
-  margin-right: 5px;
+  margin-right: 15px;
   color: rgb(251, 251, 251);
 }
 

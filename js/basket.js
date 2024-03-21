@@ -1,12 +1,16 @@
-import { createApiEndpoint, handleLogout, getCookie, setTotalQuantityCookie, getTotalQuantityFromCookie } from './functions.js';
+import { createApiEndpoint, handleLogout, getCookie, QuantityCookie, deleteOrder } from './functions.js';
 
 const displayDiv = document.querySelector('#displayDiv');
+const userContainer = document.querySelector('#user-container');
 const userNameElement = document.querySelector('#user-name');
 const logoutButton = document.querySelector('#logout-button');
 let basketTitle = document.querySelector('#basket-title');
 
 const orderApiUrl = createApiEndpoint(`orders`);
 const userApiUrl = createApiEndpoint("user");
+
+userContainer.style.display = 'none';
+userNameElement.textContent = ''
 
 const userToken = getCookie('userToken');
 let userData;
@@ -23,10 +27,10 @@ fetch(userApiUrl, {
   .then(response => response.json())
   .then(data => {
     userData = data;
-
     const userName = userData.name;
     userNameElement.textContent = userName;
 
+    userContainer.style.display = '';
     fetch(orderApiUrl, {
       method: 'GET',
       headers: {
@@ -85,8 +89,7 @@ function generateTable(orderData) {
     tbody.appendChild(tr);
   });
 
-  setTotalQuantityCookie(totalQuantity);
-  basketTitle.textContent = `(${getTotalQuantityFromCookie()})`;
+  QuantityCookie(totalQuantity, basketTitle);
 
   tableContainer.appendChild(tbody);
 

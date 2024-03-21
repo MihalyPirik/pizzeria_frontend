@@ -1,4 +1,4 @@
-import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, getTotalQuantityFromCookie } from './functions.js';
+import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, QuantityCookie, getTotalQuantityFromCookie, fetchOrders, createOrder, updateOrder } from './functions.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const categoryId = urlParams.get('id');
@@ -9,6 +9,8 @@ const displayDiv = document.querySelector('#food-display');
 const userNameElement = document.querySelector('#user-name');
 const userContainer = document.querySelector('#user-container');
 const inputContainerElement = document.querySelector('#input-container');
+const loginElement = document.querySelector('#login');
+const registerElement = document.querySelector('#register');
 const logoutButton = document.querySelector('#logout-button');
 let basketTitle = document.querySelector('#basket-title');
 
@@ -16,16 +18,54 @@ const FOODS_PAGE_URL = 'foods.html';
 
 const foodsByCategoriesApiUrl = createApiEndpoint(`categories/${categoryId}`);
 const userApiUrl = createApiEndpoint("user");
-const orderApiUrl = createApiEndpoint(`orders`);
 
+userContainer.style.display = 'none';
 userNameElement.textContent = '';
 inputContainerElement.style.display = '';
-userContainer.style.display = 'none';
+loginElement.textContent = 'Bejelentkezés';
+registerElement.textContent = 'Regisztráció';
 
 const userToken = getCookie('userToken');
 let userData;
 
 logoutButton.addEventListener('click', handleLogout);
+
+if (userToken && userToken.trim() !== "") {
+  fetchData();
+}
+
+function fetchData() {
+  fetch(userApiUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${userToken}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('A felhasználó adatainak lekérése sikertelen');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data && data.name) {
+        userData = data;
+        const userName = userData.name;
+        userNameElement.textContent = userName;
+
+        basketTitle.textContent = `${getTotalQuantityFromCookie()}`;
+        inputContainerElement.style.display = 'none';
+        loginElement.textContent = '';
+        registerElement.textContent = '';
+        userContainer.style.display = '';
+      } else {
+        throw new Error('Hibás felhasználói adatok');
+      }
+    })
+    .catch(error => {
+      console.error('Hiba történt a felhasználó adatainak lekérése közben:', error);
+    });
+}
 
 fetch(foodsByCategoriesApiUrl)
   .then(response => {
@@ -35,7 +75,7 @@ fetch(foodsByCategoriesApiUrl)
     return response.json();
   })
   .then(data => {
-    basketTitle.textContent = `(${getTotalQuantityFromCookie()})`;
+    basketTitle.textContent = `${getTotalQuantityFromCookie()}`;
     clearDisplayDiv(displayDiv);
 
     if (Array.isArray(data.foods)) {
@@ -47,28 +87,6 @@ fetch(foodsByCategoriesApiUrl)
   .catch(error => {
     console.error('Error:', error);
   });
-
-if (userToken) {
-  fetch(userApiUrl, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${userToken}`
-    }
-  })
-    .then(response => response.json())
-    .then(data => {
-      userData = data;
-
-      const userName = userData.name;
-      userNameElement.textContent = userName;
-
-      userContainer.style.display = '';
-      inputContainerElement.style.display = 'none';
-    })
-    .catch(error => {
-      console.error('Hiba történt a felhasználó adatainak lekérése közben:', error);
-    });
-}
 
 function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL) {
   dataArray.forEach(item => {
@@ -131,6 +149,7 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
     displayDiv.appendChild(divElement);
 
     buttonElement.addEventListener("click", function () {
+      let quantity = getTotalQuantityFromCookie();
       var orderData = {
         order: [
           {
@@ -143,19 +162,41 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
       };
 
       (async () => {
+        var currentUpdate = false
         var orders = await fetchOrders();
         if (orders.length === 0) {
           createOrder(orderData);
+          return
         }
-        else {
+        orders[0].order.forEach(element => {
+          if (element.name === item.name) {
+            if (parseInt(selectElement.value) === 0) {
+              quantity -= parseInt(element.quantity);
+              orders[0].order.splice(orders[0].order.indexOf(element), 1);
+              updateOrder(orders[0].id, orders[0].order, orders[0].created_at);
+            }
+            else {
+              quantity += parseInt(selectElement.value);
+              element.quantity = parseInt(element.quantity) + parseInt(selectElement.value);
+              element.allPrice = element.price * element.quantity;
+              updateOrder(orders[0].id, orders[0].order, orders[0].created_at);
+            }
+            currentUpdate = true;
+          }
+        });
+
+        if (!currentUpdate) {
           orders[0].order.push({
-            quantity: selectElement.value,
+            quantity: parseInt(selectElement.value),
             name: item.name,
             price: item.price,
             allPrice: item.price * selectElement.value
           });
+          quantity += parseInt(selectElement.value);
           updateOrder(orders[0].id, orders[0].order, orders[0].created_at);
         }
+
+        QuantityCookie(quantity, basketTitle);
       })();
     });
 
@@ -164,82 +205,3 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
     });
   });
 };
-
-async function fetchOrders() {
-  try {
-    const orders = await getOrders();
-    return orders;
-  } catch (error) {
-    console.error('Hiba történt:', error);
-  }
-}
-
-function getOrders() {
-  return fetch(orderApiUrl, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${userToken}`
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .catch(error => {
-      console.error('Error:', error.message);
-      throw error;
-    });
-}
-
-
-function createOrder(orderData) {
-  fetch(orderApiUrl, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${userToken}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(orderData)
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-
-    })
-    .catch(error => {
-      console.error('Error:', error.message);
-    });
-}
-
-function updateOrder(orderId, updatedData, created_at) {
-  const formattedData = {
-    id: orderId,
-    order: updatedData,
-    created_at: created_at
-  };
-  console.log(formattedData);
-
-  fetch(`${orderApiUrl}/${orderId}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${userToken}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formattedData)
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .catch(error => {
-      console.error('Error:', error.message);
-    });
-}

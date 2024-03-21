@@ -3,6 +3,7 @@ const baseUrl = 'http://127.0.0.1:8000';
 const INDEX_PAGE_URL = 'index.html';
 
 const logoutApiUrl = createApiEndpoint("logout");
+const orderApiUrl = createApiEndpoint(`orders`);
 const userToken = getCookie('userToken');
 
 function addBaseUrl(endpoint) {
@@ -61,6 +62,99 @@ function handleLogout() {
     });
 }
 
+async function fetchOrders() {
+  try {
+    const orders = await getOrders();
+    return orders;
+  } catch (error) {
+    console.error('Hiba történt:', error);
+  }
+}
+
+function getOrders() {
+  return fetch(orderApiUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${userToken}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+      throw error;
+    });
+}
+
+function createOrder(orderData) {
+  fetch(orderApiUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(orderData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('A hálózati válasz nem volt rendben');
+      }
+      console.log(orderData);
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+}
+
+function updateOrder(orderId, updatedData, created_at) {
+  const formattedData = {
+    id: orderId,
+    order: updatedData,
+    created_at: created_at
+  };
+  console.log(formattedData);
+
+  fetch(`${orderApiUrl}/${orderId}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formattedData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('A hálózati válasz nem volt rendben');
+      }
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+}
+
+function deleteOrder(orderId) {
+  fetch(`${orderApiUrl}/${orderId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${userToken}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('A hálózati válasz nem volt rendben');
+      }
+      console.log('A rendelés sikeresen törölve lett.');
+    })
+    .catch(error => {
+      console.error('Hiba történt a rendelés törlése közben:', error.message);
+    });
+}
 
 function setTotalQuantityCookie(totalQuantity) {
   document.cookie = `totalQuantity=${totalQuantity}`;
@@ -77,4 +171,22 @@ function getTotalQuantityFromCookie() {
   return "";
 }
 
-export { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, Message, setTotalQuantityCookie, getTotalQuantityFromCookie };
+function QuantityCookie(totalQuantity, basketTitle) {
+  setTotalQuantityCookie(totalQuantity);
+  basketTitle.textContent = `${getTotalQuantityFromCookie()}`;
+}
+
+export {
+  createApiEndpoint,
+  handleLogout,
+  clearDisplayDiv, 
+  getCookie,
+  Message,
+  setTotalQuantityCookie,
+  getTotalQuantityFromCookie,
+  fetchOrders,
+  createOrder,
+  updateOrder,
+  deleteOrder,
+  QuantityCookie
+};
