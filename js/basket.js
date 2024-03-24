@@ -1,4 +1,4 @@
-import { createApiEndpoint, handleLogout, getCookie, QuantityCookie, deleteOrder } from './functions.js';
+import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, QuantityCookie, getTotalQuantityFromCookie, updateOrder } from './functions.js';
 
 const displayDiv = document.querySelector('#displayDiv');
 const userContainer = document.querySelector('#user-container');
@@ -6,15 +6,14 @@ const userNameElement = document.querySelector('#user-name');
 const logoutButton = document.querySelector('#logout-button');
 let basketTitle = document.querySelector('#basket-title');
 
-const orderApiUrl = createApiEndpoint(`orders`);
-const userApiUrl = createApiEndpoint("user");
+const orderApiUrl = createApiEndpoint('orders');
+const userApiUrl = createApiEndpoint('user');
 
 userContainer.style.display = 'none';
-userNameElement.textContent = ''
+userNameElement.textContent = '';
 
 const userToken = getCookie('userToken');
 let userData;
-let orderData;
 
 logoutButton.addEventListener('click', handleLogout);
 
@@ -44,8 +43,7 @@ fetch(userApiUrl, {
         return response.json();
       })
       .then(data => {
-        orderData = data[0].order;
-        let table = generateTable(orderData);
+        let table = generateTable(data[0]);
         displayDiv.appendChild(table);
       })
       .catch(error => {
@@ -73,25 +71,51 @@ function generateTable(orderData) {
 
   let tbody = document.createElement('tbody');
 
-  orderData.forEach((orderItem) => {
+  orderData.order.forEach((orderItem) => {
     let tr = document.createElement('tr');
 
     Object.keys(orderItem).forEach((key) => {
       let td = document.createElement('td');
-      td.textContent = orderItem[key];
-      tr.appendChild(td);
-
       if (key === 'quantity') {
+        let select = document.createElement('select');
+        select.addEventListener('change', function (event) {
+          clearDisplayDiv(displayDiv);
+          let quantity = getTotalQuantityFromCookie();
+          if (event.target.value == 0) {
+            quantity -= parseInt(orderItem.quantity);
+            orderData.order.splice(orderData.order.indexOf(orderItem), 1);
+            updateOrder(orderData.id, orderData.order, orderData.created_at);
+            QuantityCookie(quantity, basketTitle);
+            displayDiv.appendChild(generateTable(orderData));
+          }
+        });
+        for (let i = 0; i <= 9; i++) {
+          let option = document.createElement('option');
+          option.value = i;
+          option.textContent = i;
+          select.appendChild(option);
+        }
+        if (parseInt(orderItem[key]) > 9) {
+          select.value = 9;
+        } else {
+          select.value = orderItem[key];
+        }
+        select.className = 'form-select';
+        td.appendChild(select);
         totalQuantity += parseInt(orderItem[key]);
+      } else {
+        td.textContent = orderItem[key];
       }
+      tr.appendChild(td);
     });
 
     tbody.appendChild(tr);
   });
 
-  QuantityCookie(totalQuantity, basketTitle);
-
   tableContainer.appendChild(tbody);
+
+  QuantityCookie(totalQuantity, basketTitle);
+  basketTitle.textContent = getTotalQuantityFromCookie();
 
   return tableContainer;
 }

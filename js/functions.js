@@ -117,7 +117,6 @@ function updateOrder(orderId, updatedData, created_at) {
     order: updatedData,
     created_at: created_at
   };
-  console.log(formattedData);
 
   fetch(`${orderApiUrl}/${orderId}`, {
     method: 'PUT',
@@ -173,13 +172,13 @@ function getTotalQuantityFromCookie() {
 
 function QuantityCookie(totalQuantity, basketTitle) {
   setTotalQuantityCookie(totalQuantity);
-  basketTitle.textContent = `${getTotalQuantityFromCookie()}`;
+  basketTitle.textContent = getTotalQuantityFromCookie();
 }
 
 export {
   createApiEndpoint,
   handleLogout,
-  clearDisplayDiv, 
+  clearDisplayDiv,
   getCookie,
   Message,
   setTotalQuantityCookie,

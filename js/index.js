@@ -50,7 +50,7 @@ function fetchData() {
         const userName = userData.name;
         userNameElement.textContent = userName;
 
-        basketTitle.textContent = `${getTotalQuantityFromCookie()}`;
+        basketTitle.textContent = getTotalQuantityFromCookie();
         inputContainerElement.style.display = 'none';
         loginElement.textContent = '';
         registerElement.textContent = '';

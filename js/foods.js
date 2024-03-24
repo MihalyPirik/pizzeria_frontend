@@ -17,7 +17,7 @@ let basketTitle = document.querySelector('#basket-title');
 const FOODS_PAGE_URL = 'foods.html';
 
 const foodsByCategoriesApiUrl = createApiEndpoint(`categories/${categoryId}`);
-const userApiUrl = createApiEndpoint("user");
+const userApiUrl = createApiEndpoint('user');
 
 userContainer.style.display = 'none';
 userNameElement.textContent = '';
@@ -30,7 +30,7 @@ let userData;
 
 logoutButton.addEventListener('click', handleLogout);
 
-if (userToken && userToken.trim() !== "") {
+if (userToken && userToken.trim() !== '') {
   fetchData();
 }
 
@@ -53,7 +53,7 @@ function fetchData() {
         const userName = userData.name;
         userNameElement.textContent = userName;
 
-        basketTitle.textContent = `${getTotalQuantityFromCookie()}`;
+        basketTitle.textContent = getTotalQuantityFromCookie();
         inputContainerElement.style.display = 'none';
         loginElement.textContent = '';
         registerElement.textContent = '';
@@ -75,7 +75,6 @@ fetch(foodsByCategoriesApiUrl)
     return response.json();
   })
   .then(data => {
-    basketTitle.textContent = `${getTotalQuantityFromCookie()}`;
     clearDisplayDiv(displayDiv);
 
     if (Array.isArray(data.foods)) {
@@ -91,40 +90,40 @@ fetch(foodsByCategoriesApiUrl)
 function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL) {
   dataArray.forEach(item => {
     const divElement = document.createElement('div');
-    divElement.className = "col-md-4 text-center";
-    divElement.setAttribute("data-aos", "fade-up");
-    divElement.setAttribute("data-aos-delay", "100");
-    divElement.setAttribute("data-aos-duration", "1000");
+    divElement.className = 'col-md-4 text-center';
+    divElement.setAttribute('data-aos', 'fade-up');
+    divElement.setAttribute('data-aos-delay', '100');
+    divElement.setAttribute('data-aos-duration', '1000');
 
-    const anchorElement = document.createElement("a");
+    const anchorElement = document.createElement('a');
     anchorElement.href = pageURL;
-    anchorElement.className = "card-move img-transparent-background";
+    anchorElement.className = 'card-move img-transparent-background';
 
-    const imgElement = document.createElement("img");
-    imgElement.className = "card-img-top";
+    const imgElement = document.createElement('img');
+    imgElement.className = 'card-img-top';
     imgElement.src = imgURL;
-    imgElement.alt = "Card image cap";
+    imgElement.alt = 'Card image cap';
 
     anchorElement.appendChild(imgElement);
 
-    const cardBodyElement = document.createElement("div");
-    cardBodyElement.className = "card-body";
+    const cardBodyElement = document.createElement('div');
+    cardBodyElement.className = 'card-body';
 
-    const headingElement = document.createElement("h5");
+    const headingElement = document.createElement('h5');
     headingElement.textContent = item[name];
 
-    const contentWrapper = document.createElement("div");
-    contentWrapper.className = "content-wrapper";
+    const contentWrapper = document.createElement('div');
+    contentWrapper.className = 'content-wrapper';
 
-    const paragraphElement = document.createElement("p");
-    paragraphElement.className = "price";
-    paragraphElement.textContent = item[price] + " forint";
+    const paragraphElement = document.createElement('p');
+    paragraphElement.className = 'price';
+    paragraphElement.textContent = item[price] + ' forint';
 
-    const selectElement = document.createElement("select");
-    selectElement.className = "form-select";
+    const selectElement = document.createElement('select');
+    selectElement.className = 'form-select';
 
-    for (let i = 0; i <= 10; i++) {
-      const optionElement = document.createElement("option");
+    for (let i = 1; i <= 9; i++) {
+      const optionElement = document.createElement('option');
       optionElement.textContent = i;
       if (i === 1) {
         optionElement.selected = true;
@@ -132,9 +131,9 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
       selectElement.appendChild(optionElement);
     }
 
-    const buttonElement = document.createElement("button");
-    buttonElement.className = "btn btn-primary btn-sm order-btn orderBtn";
-    buttonElement.textContent = "kosárba";
+    const buttonElement = document.createElement('button');
+    buttonElement.className = 'btn btn-primary btn-sm order-btn orderBtn';
+    buttonElement.textContent = 'kosárba';
 
     contentWrapper.appendChild(paragraphElement);
     contentWrapper.appendChild(selectElement);
@@ -148,7 +147,7 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
 
     displayDiv.appendChild(divElement);
 
-    buttonElement.addEventListener("click", function () {
+    buttonElement.addEventListener('click', function () {
       let quantity = getTotalQuantityFromCookie();
       var orderData = {
         order: [
@@ -170,17 +169,10 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
         }
         orders[0].order.forEach(element => {
           if (element.name === item.name) {
-            if (parseInt(selectElement.value) === 0) {
-              quantity -= parseInt(element.quantity);
-              orders[0].order.splice(orders[0].order.indexOf(element), 1);
-              updateOrder(orders[0].id, orders[0].order, orders[0].created_at);
-            }
-            else {
-              quantity += parseInt(selectElement.value);
-              element.quantity = parseInt(element.quantity) + parseInt(selectElement.value);
-              element.allPrice = element.price * element.quantity;
-              updateOrder(orders[0].id, orders[0].order, orders[0].created_at);
-            }
+            quantity += parseInt(selectElement.value);
+            element.quantity = parseInt(element.quantity) + parseInt(selectElement.value);
+            element.allPrice = element.price * element.quantity;
+            updateOrder(orders[0].id, orders[0].order, orders[0].created_at);
             currentUpdate = true;
           }
         });
@@ -200,7 +192,7 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
       })();
     });
 
-    anchorElement.addEventListener("click", function (event) {
+    anchorElement.addEventListener('click', function (event) {
       event.preventDefault();
     });
   });
