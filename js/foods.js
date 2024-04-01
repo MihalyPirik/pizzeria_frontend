@@ -52,6 +52,9 @@ function fetchData() {
         userData = data;
         const userName = userData.name;
         userNameElement.textContent = userName;
+        userNameElement.addEventListener('click', function () {
+          window.location.href = 'profile.html';
+        });
 
         basketTitle.textContent = getTotalQuantityFromCookie();
         inputContainerElement.style.display = 'none';
@@ -165,6 +168,8 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
         var orders = await fetchOrders();
         if (orders.length === 0) {
           createOrder(orderData);
+          quantity += selectElement.value;
+          QuantityCookie(quantity, basketTitle);
           return
         }
         orders[0].order.forEach(element => {

@@ -1,4 +1,4 @@
-import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, QuantityCookie, getTotalQuantityFromCookie, updateOrder } from './functions.js';
+import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, QuantityCookie, getTotalQuantityFromCookie, updateOrder, deleteOrder } from './functions.js';
 
 const displayDiv = document.querySelector('#displayDiv');
 const userContainer = document.querySelector('#user-container');
@@ -28,6 +28,9 @@ fetch(userApiUrl, {
     userData = data;
     const userName = userData.name;
     userNameElement.textContent = userName;
+    userNameElement.addEventListener('click', function () {
+      window.location.href = 'profile.html';
+    });
 
     userContainer.style.display = '';
     fetch(orderApiUrl, {
@@ -44,7 +47,9 @@ fetch(userApiUrl, {
       })
       .then(data => {
         let table = generateTable(data[0]);
+        let button = deleteButtonCreate(data[0]);
         displayDiv.appendChild(table);
+        displayDiv.appendChild(button);
       })
       .catch(error => {
         console.error('Hiba történt:', error);
@@ -115,7 +120,19 @@ function generateTable(orderData) {
   tableContainer.appendChild(tbody);
 
   QuantityCookie(totalQuantity, basketTitle);
-  basketTitle.textContent = getTotalQuantityFromCookie();
 
   return tableContainer;
+}
+
+function deleteButtonCreate(orderData) {
+  let deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Kosár törlése';
+  deleteButton.className = 'btn-sm btn btn-primary mb-5 mt-2 d-block mx-auto';
+  deleteButton.addEventListener('click', function () {
+    deleteOrder(orderData.id);
+    clearDisplayDiv(displayDiv);
+    const totalQuantity = 0;
+    QuantityCookie(totalQuantity, basketTitle);
+  });
+  return deleteButton;
 }

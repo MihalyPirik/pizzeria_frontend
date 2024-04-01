@@ -49,6 +49,9 @@ function fetchData() {
         userData = data;
         const userName = userData.name;
         userNameElement.textContent = userName;
+        userNameElement.addEventListener('click', function () {
+          window.location.href = 'profile.html';
+        });
 
         basketTitle.textContent = getTotalQuantityFromCookie();
         inputContainerElement.style.display = 'none';
