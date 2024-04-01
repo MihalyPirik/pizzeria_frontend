@@ -155,7 +155,7 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
       var orderData = {
         order: [
           {
-            quantity: selectElement.value,
+            quantity: parseInt(selectElement.value),
             name: item.name,
             price: item.price,
             allPrice: item.price * selectElement.value
@@ -168,7 +168,7 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
         var orders = await fetchOrders();
         if (orders.length === 0) {
           createOrder(orderData);
-          quantity += selectElement.value;
+          quantity += parseInt(selectElement.value);
           QuantityCookie(quantity, basketTitle);
           return
         }

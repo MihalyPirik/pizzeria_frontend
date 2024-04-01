@@ -93,6 +93,15 @@ function generateTable(orderData) {
             QuantityCookie(quantity, basketTitle);
             displayDiv.appendChild(generateTable(orderData));
           }
+          else {
+            quantity += parseInt(event.target.value) - parseInt(orderItem.quantity);
+            orderItem.quantity = parseInt(event.target.value);
+            orderItem.allPrice = parseInt(orderItem.price * event.target.value);
+            updateOrder(orderData.id, orderData.order, orderData.created_at);
+            QuantityCookie(quantity, basketTitle);
+            displayDiv.appendChild(generateTable(orderData));
+            displayDiv.appendChild(deleteButtonCreate(orderData));
+          }
         });
         for (let i = 0; i <= 9; i++) {
           let option = document.createElement('option');

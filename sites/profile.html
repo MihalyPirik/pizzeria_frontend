@@ -30,18 +30,18 @@
 
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav mr-auto">
-              <li class="nav-item">
-                <a class="nav-link" href="index.html#index">Kezdőlap</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="index.html#menu">Étlap</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="index.html#econtact">Elérhetőségek</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="index.html#about-me">Rólunk</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html#index">Kezdőlap</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html#menu">Étlap</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html#econtact">Elérhetőségek</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html#about-me">Rólunk</a>
+                </li>
             </ul>
             <div id="input-container">
                 <a href="login.html" id="login"></a>
@@ -69,8 +69,36 @@
     </header>
     <hr>
 
-    <main>
-      <h1>-fejlesztés alatt-</h1><br>
+    <main class="container" data-aos="fade-up">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form id="profileForm">
+                        <div class="mb-3">
+                            <label for="InputName" class="form-label">Teljes név:</label>
+                            <input type="text" class="form-control" id="InputName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputEmail" class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="InputEmail">
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputPhoneNumber" class="form-label">Telefonszám:</label>
+                            <input type="text" class="form-control" id="InputPhoneNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputAddress" class="form-label">Lakcím:</label>
+                            <input type="text" class="form-control" id="InputAddress">
+                        </div>
+                        <div id="error" class="h5 text-center mb-3"></div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary mb-5">Módosítás</button>
+                            <button  type="submit" class="btn btn-primary mb-5">Új jelszó igénylése</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer>

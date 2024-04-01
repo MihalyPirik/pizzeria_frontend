@@ -1,14 +1,16 @@
-import { createApiEndpoint, handleLogout, clearDisplayDiv, getCookie, getTotalQuantityFromCookie } from './functions.js';
+import { createApiEndpoint, handleLogout, getCookie, getTotalQuantityFromCookie, Message } from './functions.js';
 
-const imgURL = '../imgs/pizzak1.png';
-
-const displayDiv = document.querySelector('#categories-display');
 const userNameElement = document.querySelector('#user-name');
 const userContainer = document.querySelector('#user-container');
 const inputContainerElement = document.querySelector('#input-container');
 const loginElement = document.querySelector('#login');
 const registerElement = document.querySelector('#register');
 const logoutButton = document.querySelector('#logout-button');
+
+let name = document.querySelector('#InputName');
+let email = document.querySelector('#InputEmail');
+let phoneNumber = document.querySelector('#InputPhoneNumber');
+let address = document.querySelector('#InputAddress');
 let basketTitle = document.querySelector('#basket-title');
 
 const userApiUrl = createApiEndpoint("user");
@@ -42,10 +44,14 @@ function fetchData() {
       return response.json();
     })
     .then(data => {
-      if (data && data.name) {
+      if (data) {
         userData = data;
         const userName = userData.name;
         userNameElement.textContent = userName;
+        name.value = userData.name;
+        email.value = userData.email;
+        phoneNumber.value = userData.phoneNumber;
+        address.value = userData.address;
         userNameElement.addEventListener('click', function () {
           window.location.href = 'profile.html';
         });
