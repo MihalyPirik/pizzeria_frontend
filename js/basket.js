@@ -47,7 +47,7 @@ fetch(userApiUrl, {
       })
       .then(data => {
         let table = generateTable(data[0]);
-        let button = deleteButtonCreate(data[0]);
+        let button = createButtons(data[0]);
         displayDiv.appendChild(table);
         displayDiv.appendChild(button);
       })
@@ -101,6 +101,7 @@ function generateTable(orderData) {
             QuantityCookie(quantity, basketTitle);
             displayDiv.appendChild(generateTable(orderData));
             displayDiv.appendChild(deleteButtonCreate(orderData));
+            displayDiv.appendChild(orderButtonCreate(orderData));
           }
         });
         for (let i = 0; i <= 9; i++) {
@@ -133,15 +134,29 @@ function generateTable(orderData) {
   return tableContainer;
 }
 
-function deleteButtonCreate(orderData) {
-  let deleteButton = document.createElement('button');
+function createButtons(orderData) {
+  const buttonsContainer = document.createElement('div');
+  buttonsContainer.className = 'buttons-container';
+
+  const deleteButton = document.createElement('button');
   deleteButton.textContent = 'Kosár törlése';
-  deleteButton.className = 'btn-sm btn btn-primary mb-5 mt-2 d-block mx-auto';
+  deleteButton.className = 'btn-sm btn btn-primary mb-5 mt-2';
   deleteButton.addEventListener('click', function () {
     deleteOrder(orderData.id);
     clearDisplayDiv(displayDiv);
     const totalQuantity = 0;
     QuantityCookie(totalQuantity, basketTitle);
   });
-  return deleteButton;
+
+  const orderButton = document.createElement('button');
+  orderButton.textContent = 'Rendelés';
+  orderButton.className = 'btn-sm btn btn-primary mb-5 mt-2';
+  orderButton.addEventListener('click', function () {
+    // rendelés leadás
+  });
+
+  buttonsContainer.appendChild(deleteButton);
+  buttonsContainer.appendChild(orderButton);
+
+  return buttonsContainer;
 }
