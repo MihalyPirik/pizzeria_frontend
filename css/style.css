@@ -45,14 +45,19 @@ hr {
   color: wheat;
 }
 
-.btn-primary {
+.btn-dark {
   background-color: rgb(97, 59, 6);
   border: none;
 }
 
-.btn-primary:hover {
+.btn-dark:hover {
   background-color: rgb(0, 0, 0);
   border: none;
+}
+
+.btn-dark:focus {
+  background-color: rgb(0, 0, 0);
+  box-shadow: none;
 }
 
 h2 {

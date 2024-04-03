@@ -6,6 +6,8 @@ const inputContainerElement = document.querySelector('#input-container');
 const loginElement = document.querySelector('#login');
 const registerElement = document.querySelector('#register');
 const logoutButton = document.querySelector('#logout-button');
+const saveButton = document.querySelector('#save-button');
+const message = document.querySelector('#error');
 
 let name = document.querySelector('#InputName');
 let email = document.querySelector('#InputEmail');
@@ -25,6 +27,10 @@ const userToken = getCookie('userToken');
 let userData;
 
 logoutButton.addEventListener('click', handleLogout);
+saveButton.addEventListener('click', function (event) {
+  event.preventDefault();
+  saveChanges();
+});
 
 if (userToken && userToken.trim() !== "") {
   fetchData();
@@ -67,5 +73,49 @@ function fetchData() {
     })
     .catch(error => {
       console.error('Hiba történt a felhasználó adatainak lekérése közben:', error);
+    });
+}
+
+function saveChanges() {
+  let formattedData = {};
+
+  userData.name = name.value;
+  userData.phoneNumber = phoneNumber.value;
+  userData.address = address.value;
+  if (userData.email != email.value) {
+    userData.email = email.value;
+    formattedData = {
+      name: userData.name,
+      email: userData.email,
+      phoneNumber: userData.phoneNumber,
+      address: userData.address
+    }
+  }
+  else {
+    formattedData = {
+      name: userData.name,
+      phoneNumber: userData.phoneNumber,
+      address: userData.address
+    }
+  }
+
+  fetch(userApiUrl, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formattedData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        Message('A hálózati válasz nem volt rendben!', message, 'red');
+        return;
+      }
+      Message('Sikeres módosítás!', message, 'green');
+      return response.json();
+    })
+    .catch(error => {
+      Message('Hiba történt a felhasználó adatainak módosítása közben!', message, 'red');
     });
 }

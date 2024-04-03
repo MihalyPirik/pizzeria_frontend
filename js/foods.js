@@ -135,7 +135,7 @@ function displayValuesInDiv(dataArray, name, price, displayDiv, imgURL, pageURL)
     }
 
     const buttonElement = document.createElement('button');
-    buttonElement.className = 'btn btn-primary btn-sm order-btn orderBtn';
+    buttonElement.className = 'btn btn-dark btn-sm order-btn orderBtn';
     buttonElement.textContent = 'kosárba';
 
     contentWrapper.appendChild(paragraphElement);

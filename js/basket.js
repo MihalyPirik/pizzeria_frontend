@@ -46,6 +46,7 @@ fetch(userApiUrl, {
         return response.json();
       })
       .then(data => {
+        basketTitle.textContent = getTotalQuantityFromCookie();
         let table = generateTable(data[0]);
         let button = createButtons(data[0]);
         displayDiv.appendChild(table);
@@ -92,6 +93,7 @@ function generateTable(orderData) {
             updateOrder(orderData.id, orderData.order, orderData.created_at);
             QuantityCookie(quantity, basketTitle);
             displayDiv.appendChild(generateTable(orderData));
+            displayDiv.appendChild(createButtons(orderData));
           }
           else {
             quantity += parseInt(event.target.value) - parseInt(orderItem.quantity);
@@ -100,8 +102,7 @@ function generateTable(orderData) {
             updateOrder(orderData.id, orderData.order, orderData.created_at);
             QuantityCookie(quantity, basketTitle);
             displayDiv.appendChild(generateTable(orderData));
-            displayDiv.appendChild(deleteButtonCreate(orderData));
-            displayDiv.appendChild(orderButtonCreate(orderData));
+            displayDiv.appendChild(createButtons(orderData));
           }
         });
         for (let i = 0; i <= 9; i++) {
@@ -140,7 +141,7 @@ function createButtons(orderData) {
 
   const deleteButton = document.createElement('button');
   deleteButton.textContent = 'Kosár törlése';
-  deleteButton.className = 'btn-sm btn btn-primary mb-5 mt-2';
+  deleteButton.className = 'btn-sm btn btn-dark mb-5 mt-2';
   deleteButton.addEventListener('click', function () {
     deleteOrder(orderData.id);
     clearDisplayDiv(displayDiv);
@@ -150,7 +151,7 @@ function createButtons(orderData) {
 
   const orderButton = document.createElement('button');
   orderButton.textContent = 'Rendelés';
-  orderButton.className = 'btn-sm btn btn-primary mb-5 mt-2';
+  orderButton.className = 'btn-sm btn btn-dark mb-5 mt-2';
   orderButton.addEventListener('click', function () {
     // rendelés leadás
   });
