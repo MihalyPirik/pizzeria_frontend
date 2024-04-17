@@ -28,8 +28,21 @@ let userData;
 
 logoutButton.addEventListener('click', handleLogout);
 saveButton.addEventListener('click', function (event) {
+  const chechEmailApiUrl = createApiEndpoint('check-email/' + email.value);
   event.preventDefault();
-  saveChanges();
+  fetch(chechEmailApiUrl)
+    .then(response => response.json())
+    .then(data => {
+      if (data.exists) {
+        Message('Ez az email cím már foglalt!', message, 'red');
+        return;
+      }
+
+      saveChanges();
+    })
+    .catch(error => {
+      Message('Hiba történt az email ellenőrzése során!', message, 'red');
+    });
 });
 
 if (userToken && userToken.trim() !== "") {
@@ -82,6 +95,11 @@ function saveChanges() {
   userData.name = name.value;
   userData.phoneNumber = phoneNumber.value;
   userData.address = address.value;
+
+  if (!validateUserData(name.value, email.value, phoneNumber.value, address.value, message)) {
+    return;
+  }
+
   if (userData.email != email.value) {
     userData.email = email.value;
     formattedData = {
@@ -109,6 +127,7 @@ function saveChanges() {
   })
     .then(response => {
       if (!response.ok) {
+        console.log(response);
         Message('A hálózati válasz nem volt rendben!', message, 'red');
         return;
       }
@@ -118,4 +137,30 @@ function saveChanges() {
     .catch(error => {
       Message('Hiba történt a felhasználó adatainak módosítása közben!', message, 'red');
     });
+}
+
+function validateUserData(name, email, phoneNumber, address, message) {
+  if (name === '' || name === null) {
+    Message('Kérem, adjon meg egy nevet!', message, 'red');
+    return false;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    Message('Kérem, adjon meg egy érvényes e-mail címet!', message, 'red');
+    return;
+  }
+
+  const phoneRegex = /^\+36(?:20|30|70)\d{7}$/;
+  if (!phoneRegex.test(phoneNumber)) {
+    Message('Kérem, adjon meg egy érvényes telefonszámot!', message, 'red');
+    return;
+  }
+
+  if (address === '' || address === null) {
+    Message('Kérem, adjon meg egy lakcímet!', message, 'red');
+    return;
+  }
+
+  return true;
 }
