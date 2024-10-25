@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Deploy FTP-re
-        uses: SamKirkland/FTP-Deploy-Action@4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
