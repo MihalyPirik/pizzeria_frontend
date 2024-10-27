@@ -1,4 +1,4 @@
-const baseUrl = 'http://127.0.0.1:8000';
+const baseUrl = 'https://pmweb.hu';
 
 const INDEX_PAGE_URL = 'index.html';
 
