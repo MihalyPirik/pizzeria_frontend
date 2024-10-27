@@ -25,4 +25,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME1 }}
           password: ${{ secrets.FTP_PASSWORD1 }}
           local-dir: ./
-          server-dir: /htdocs/public_html/pizzeria/
+          server-dir: /htdocs/
